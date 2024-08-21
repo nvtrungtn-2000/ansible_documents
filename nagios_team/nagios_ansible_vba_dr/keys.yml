@@ -1,0 +1,39 @@
+---
+- hosts: redhat
+  gather_facts: yes
+  remote_user: nagios
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars_files:
+      - "inventory/group_vars/init_keys.yml"
+  tasks:
+   - name: Set authorized key taken from file
+     authorized_key: user=nagios key="{{ lookup('file', 'keyssh/public_key.pem') }}"
+   - name: Create Dirs on remote machine.
+     file:
+       path: "{{ item }}"
+       state: directory
+       mode: 0755
+     with_items:
+       - "{{ redis_rpmdir }}"
+       - "{{ perldir }}"
+       - "{{ includedir }}"
+       - "{{ softdir_dest }}"
+       - "{{ opt_sh_dest }}"
+   - name: Create file blank
+     file:
+      path: /etc/yum.repos.d/red.repo
+      state: touch
+      owner: root
+      group: root
+      mode: 0600
+   - name: Copy file Plugin to remote machine.
+     copy:
+       src: "files/backup.sh"
+       dest: "{{ opt_sh_dest }}"
+       owner: root
+       group: root
+       mode: 0755
+   - name: change all file in /etc/yum.repo.d to backup
+     command: sh "{{ opt_sh_dest }}/backup.sh"

@@ -1,0 +1,15 @@
+
+---
+#- import_playbook: "initial.yml"
+- name: Install NRPE and Register Host and Services
+  hosts: myhost
+  gather_facts: yes
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  vars_files:
+    - vars/vars.yml
+
+  roles:
+    - role: modify_service_nagiosxi

@@ -1,0 +1,11 @@
+---
+- include: "mount_iso.yml"
+- name: Unpack Weblogic check folder
+  unarchive:
+    src: files/check_wls.tar.gz
+    dest: "{{ plugindir }}"
+    owner: root
+    group: root
+    mode: 0755
+
+

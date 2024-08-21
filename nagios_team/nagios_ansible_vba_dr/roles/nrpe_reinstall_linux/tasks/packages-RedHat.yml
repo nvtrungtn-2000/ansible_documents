@@ -1,0 +1,27 @@
+---
+#- include: "mount_iso.yml"
+- name: Uninstall NRPE3
+  shell: cd "{{ nrpe3_uninstall_dir }}";./nrpe-uninstall progs config startup script
+
+- name: Unpack NRPE source files
+  unarchive:
+    src: files/nrpe-4.0.3.tar.gz
+    dest: "{{ softdir_dest }}"
+- name: Configure NRPE4
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";./configure --enable-command-args
+- name: Make All  NRPE4
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";make all;make install-groups-users;make install;make install-config;make install-init
+#- name: edit /etc/service
+#  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";sh -c "echo >> /etc/services";sh -c "sudo echo '# Nagios services' >> /etc/services";sh -c "sudo echo 'nrpe    5666/tcp' >> /etc/services"
+#- name: Edit /etc/sudoers
+#  command: sh -c "{{ context }}"
+  notify:
+    - restart nrpe
+- name: Unpack NRPE Plugin source files
+  unarchive:
+    src: files/nagios-plugins-2.3.3.tar.gz
+    dest: "{{ softdir_dest }}"
+- name: Configure NRPE Plugin
+  shell: cd "{{ softdir_dest }}/{{ nrpe_plugin_src }}";./configure;make;make install
+  notify:
+    - restart nrpe

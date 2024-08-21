@@ -1,0 +1,10 @@
+---
+- include: "mount_iso.yml"
+###########################################################################
+- name: Install packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "python3"

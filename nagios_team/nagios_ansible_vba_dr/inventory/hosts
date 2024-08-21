@@ -1,0 +1,14 @@
+[redhat]
+192.168.120.131
+
+[ubuntu]
+192.168.100.110
+
+[myhost]
+localhost ansible_connection=local
+[centos]
+192.168.100.120
+192.168.100.121
+
+[sles]
+192.168.100.130

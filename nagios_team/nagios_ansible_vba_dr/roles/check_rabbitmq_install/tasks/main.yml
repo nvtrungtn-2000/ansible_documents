@@ -1,0 +1,43 @@
+---
+- include: "mount_iso.yml"
+- name : Copy file rpm to remote machine.
+  copy:
+    src: "files/rpm_rabbitmq/{{ item }}"
+    dest: "{{ softdir_dest }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "perl-Class-Accessor-0.34-12.el7.noarch.rpm"
+    - "perl-Config-Tiny-2.14-7.el7.noarch.rpm"
+    - "perl-Math-Calc-Units-1.07-9.el7.noarch.rpm"
+    - "perl-Monitoring-Plugin-0.38-1.el7.1.noarch.rpm"
+- name: install perl-Class-Accessor-0.34-12.el7
+  yum:
+    name: "{{ softdir_dest }}/perl-Class-Accessor-0.34-12.el7.noarch.rpm"
+    state: present
+- name: install perl-Config-Tiny-2.14-7.el7
+  yum:
+    name: "{{ softdir_dest }}/perl-Config-Tiny-2.14-7.el7.noarch.rpm"
+    state: present
+- name: install perl-Math-Calc-Units-1.07-9.el7
+  yum:
+    name: "{{ softdir_dest }}/perl-Math-Calc-Units-1.07-9.el7.noarch.rpm"
+    state: present
+- name: install perl-Monitoring-Plugin-0.38-1.el7.1
+  yum:
+    name: "{{ softdir_dest }}/perl-Monitoring-Plugin-0.38-1.el7.1.noarch.rpm"
+    state: present
+- name: Install dependencies for check rabbitMQ
+  yum:
+    name: perl-libwww-perl
+    state: latest
+- name : Copy file Plugin to remote machine.
+  copy:
+    src: "{{ item }}"
+    dest: "{{ plugindir }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_fileglob:
+    - "files/checkwls_plugin/*"

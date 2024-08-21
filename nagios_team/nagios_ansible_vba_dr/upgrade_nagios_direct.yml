@@ -1,0 +1,18 @@
+
+---
+- import_playbook: "initial.yml"
+- name: Install NRPE and Register Host and Services
+  hosts: myhost
+  gather_facts: yes
+  become: yes
+  become_user: root
+  become_method: sudo
+  
+  vars_files:
+    - "vars/vars.yml"
+
+
+  roles:
+#   - role: nrpe_reinstall_linux
+    - role: nagiosxi_upgrade_locally
+#   - role: nrpe_install_linux

@@ -1,0 +1,122 @@
+---
+- name: API call for adding hosts to nagios
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/host?apikey={{ xi_api_key }}
+    method: POST
+    body: "host_name={{ item }}&use=xiwizard_linuxserver_host&address={{ ansible_default_ipv4.address }}&hostgroups={{ hostgroups }}&check_command={{ check_host }}&max_check_attempts=5&check_interval=5&retry_interval=1&active_checks_enabled=1&passive_checks_enabled=1&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=d,&&check_period=xi_timeperiod_24x7&notification_interval=15&notification_period=xi_timeperiod_24x7&first_notification_delay=0&notifications_enabled=1&first_notification_delay=0&notification_options=d,u,r,f,s,&stalking_options=d,u,&contacts=nagiosadmin&contact_groups={{ contact_group }}&_xiwizard=1&register=1&applyconfig=1"
+  with_items:
+     - "redhat7"
+#    validate_certs: no
+#    timeout: 120
+
+- name: Register CheckTime Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ CheckTime }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_time }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register CPU Context Switch Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ CPU_context_switch }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_ctxt_new }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register CPU Load Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ CPU_Load }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_load }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register CPU Usage Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ CPU_Usage }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_cpu_usage }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+- name: Register MEM Usage Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ MEM_Usage }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_mem_usage }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+- name: Register Disk Usage Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Disk_Usage }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_disk_usage }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+- name: Register Disk_IO Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Disk_IO }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_disk_io }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register Network IO Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Network_IO }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_network_io }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register Open Files Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Open_files }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_open_files }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register Process Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Process }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_process }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register Socket Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Socket }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_socket }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register Uptime Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Uptime }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_uptime }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Register Users Service with XI
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service?apikey={{ xi_api_key }}
+    body: "host_name={{ config_name }}&service_description={{ Users }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ check_users }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=15&first_notification_delay=15&notification_period=xi_timeperiod_24x7&notification_options=w,c,u,r,f,s,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+    method: POST
+    validate_certs: no
+    timeout: 120
+
+- name: Delete Host
+  command: curl -XDELETE "http://{{ xi_ip }}/nagiosxi/api/v1/config/host?apikey={{ xi_api_key }}&host_name={{ config_name }}&pretty=1&applyconfig=1"
+
+#- name: DELETE
+#  uri:
+#    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/host?apikey={{ xi_api_key }}
+#    body: "host_name={{ config_name }}&pretty=1&applyconfig=1"
+#    method: DELETE
+#    validate_certs: no
+#    timeout: 120

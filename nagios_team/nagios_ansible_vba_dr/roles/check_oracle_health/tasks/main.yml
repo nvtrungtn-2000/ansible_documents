@@ -1,0 +1,79 @@
+---
+- include: "mount_iso.yml"
+- name: gather facts
+  package_facts:
+      manager: auto
+# Copy file
+- name : Copy file iso and gz to remote machine.
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ softdir_dest }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "check_oracle_health-3.2.tar.gz"
+    - "oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm"
+    - "oracle-instantclient12.2-devel-12.2.0.1.0-1.x86_64.rpm"
+    - "oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm"
+    - "DBD-Oracle-1.74.tar.gz"
+- name: Unpack Check_Oracle_health files
+  unarchive:
+    src: "{{ softdir_dest }}/check_oracle_health-3.2.tar.gz"
+    dest: "{{ softdir_dest }}"
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+- name: Install  Check_Oracle_Health
+  shell: cd "{{ softdir_dest }}/{{ oracle_dir }}";./configure;make;make install
+
+- name: install nstantclient12.2-basic rpm from a local file
+  yum:
+    name: "{{ softdir_dest }}/oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm"
+    state: present
+- name: install instantclient12.2-devel rpm from a local file
+  yum:
+    name: "{{ softdir_dest }}/oracle-instantclient12.2-devel-12.2.0.1.0-1.x86_64.rpm"
+    state: present
+- name: install instantclient12.2-sqlplus rpm from a local file
+  yum:
+    name: "{{ softdir_dest }}/oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm"
+    state: present
+- name: Install perl-DBI packages
+  yum:
+    name: perl-DBI
+    state: present
+    update_cache: yes
+#Install DBD-Oracle-1.74.tar.gz
+- name: Unpack DBD-Oracle-1.74.tar.gz
+  unarchive:
+    src: "{{ softdir_dest }}/DBD-Oracle-1.74.tar.gz"
+    dest: "{{ softdir_dest }}"
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+- name: Install  DBD-Oracle
+  shell: cd "{{ softdir_dest }}/{{ oracle_dbd_dir }}";export LD_LIBRARY_PATH=/usr/lib/oracle/12.2/client64/lib; export ORACLE_HOME=/usr/lib/oracle/12.2/client64;perl Makefile.PL -m /usr/share/oracle/12.2/client64/demo/demo.mk
+- name: Make DBD-Oracle
+  shell: cd "{{ softdir_dest }}/{{ oracle_dbd_dir }}";make;make install
+- name : Copy file Plugin to remote machine.
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ plugindir }}"
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+    - "check_ora_db.pl"
+    - "check_asm.pl"
+- name : Copy file config to remote machine.
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ includedir }}"
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+    - "vnpay_oracle.cfg"

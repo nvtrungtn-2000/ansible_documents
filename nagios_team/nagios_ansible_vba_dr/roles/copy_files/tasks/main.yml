@@ -1,0 +1,33 @@
+---
+#- name : Copy files to remote machine.
+#  copy:
+#    src: "files/{{ item }}"
+#    dest: "{{ plugindir }}"
+#    owner: root
+#    group: root
+#    mode: 0775
+#  with_items:
+#    - "check_springboot.py"
+###########################################################################
+#- name : run shell command
+#  shell: |
+#    sed -i '/check_disk_new/d' /usr/local/nagios/etc/nrpe/vnpay_linux.cfg
+###########################################################################
+- name: replace line
+  replace:
+    path: /usr/local/nagios/etc/nrpe/vnpay_linux.cfg
+    regexp: 'command\[check_disk_new\].*'
+    replace: 'command[check_disk_new]=/usr/local/nagios/libexec/check_linux_stats.pl -D -w $ARG1$ -c $ARG2$ -p /,/home,/var,/usr,/tmp,/data,/data1,/backup -u GB'
+
+###########################################################################
+#- name: Add line to file vnpay_linux.cfg
+#  blockinfile:
+#    path: "{{ includedir }}/vnpay_linux.cfg"
+#    marker: "####################################"
+#    state: present
+#    block: |
+#      command[check_springboot]=/usr/local/nagios/libexec/check_springboot.py --host 127.0.0.1 --port $ARG1$ --warning $ARG2$ --critical $ARG3$ $ARG4$
+- name: restart nrpe
+  service:
+    name: nrpe
+    state: restarted

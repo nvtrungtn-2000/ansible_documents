@@ -1,0 +1,65 @@
+---
+- include: "mount_iso-{{ ansible_os_family }}.yml"
+- name: Gather package facts
+  package_facts:
+    manager: apt
+- name: Update repositories cache and install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - "autoconf"
+    - "automake"
+    - "gcc"
+    - "libc6"
+    - "libmcrypt-dev"
+    - "make"
+    - "libssl-dev"
+    - "openssl"
+    - "gettext"
+    - "bc"
+    - "gawk"
+    - "dc"
+    - "build-essential"
+    - "snmp"
+    - "libnet-snmp-perl"
+- name: Copy each file over that matches the given pattern
+  copy:
+    src: "{{ item }}"
+    dest: "/tmp/"
+    group: "root"
+    owner: "root"
+    mode: 0600
+  with_fileglob:
+    - "files/deb/*"
+- name: Install a .deb packages
+  apt:
+    deb: "/tmp/{{ item }}"
+  with_items:
+    - "libuniversal-require-perl_0.18-1_all.deb"
+    - "libsys-statistics-linux-perl_0.66-1_all.deb"
+    - "libfile-readbackwards-perl_1.05-2_all.deb"
+  when: '"libsys-statistics-linux-perl" not in ansible_facts.packages'
+- name: Unpack NRPE source files
+  unarchive:
+    src: files/nrpe.tar.gz
+    dest: "{{ softdir_dest }}"
+- name: Configure NRPE
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";./configure --enable-command-args
+- name: Make All  NRPE
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";make all;make install-groups-users;make install;make install-config;make install-init
+- name: edit /etc/service
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";sh -c "echo >> /etc/services";sh -c "sudo echo '# Nagios services' >> /etc/services";sh -c "sudo echo 'nrpe    5666/tcp' >> /etc/services"
+- name: Edit /etc/sudoers
+  command: sh -c "{{ context }}"
+  notify:
+    - restart nrpe
+- name: Unpack NRPE Plugin source files
+  unarchive:
+    src: files/nagios-plugins-2.2.1.tar.gz
+    dest: "{{ softdir_dest }}"
+- name: Configure NRPE Plugin
+  shell: cd "{{ softdir_dest }}/{{ nrpe_plugin_src }}";./configure;make;make install
+  notify:
+    - restart nrpe

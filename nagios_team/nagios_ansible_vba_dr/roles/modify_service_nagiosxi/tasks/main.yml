@@ -1,0 +1,19 @@
+---
+- name: Modify Service
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/config/service/{{ config_name}}/{{ item }}?apikey={{ xi_api_key }}&pretty=1&event_handler=xi_service_event_handler&event_handler_enabled=0&applyconfig=1
+    method: PUT
+    validate_certs: no
+    timeout: 120
+  delegate_to: 127.0.0.1
+  with_items:
+    - "{{ list_service }}"
+
+- name: Apply Configuration
+  uri:
+    url: http://{{ xi_ip }}/nagiosxi/api/v1/system/applyconfig?apikey={{ xi_api_key }}
+    method: POST
+    validate_certs: no
+    timeout: 120
+  delegate_to: 127.0.0.1
+  run_once: true

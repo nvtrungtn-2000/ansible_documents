@@ -1,0 +1,14 @@
+---
+- name: Install dependencies for check nginx
+  yum:
+    name: perl-libwww-perl
+    state: latest
+- name : Copy file Plugin to remote machine.
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ plugindir }}"
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+    - "check_nginx_stats.pl"

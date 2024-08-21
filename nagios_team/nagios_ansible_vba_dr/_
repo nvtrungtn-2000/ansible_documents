@@ -1,0 +1,19 @@
+---
+- import_playbook: "keys.yml"
+- name: Install NRPE and Register Host and Services
+  hosts: redhat
+  gather_facts: yes
+  remote_user: nagios
+  #become: yes
+  become: yes
+
+
+
+#  vars_files:
+#    - vars/secrets.yml
+#  vars:
+#    xi_ip: '192.168.120.156'
+
+  roles:
+    #- role: install_python3
+    - role: nrpe_rpm_install_linux

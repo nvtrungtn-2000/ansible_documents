@@ -1,0 +1,43 @@
+---
+- include: "mount_iso.yml"
+#- name: Unpack Perl5 source files
+#  unarchive:
+#    src: files/perl5.tar.gz
+#    dest: "{{ perldir }}"
+- name: "Check if packages is installed"
+  package_facts:
+    manager: "auto"
+#- name: Package Not Found in list result
+#  debug:
+#     msg: "package {{ item }} NOT found"
+#  when: "'{{ item }}' not in ansible_facts.packages"
+#  with_items: "{{ perl_package }}"
+#  register: check_perl
+#- name: Install Perl
+#  shell: cd "{{ perldir5 }}";yum install *.rpm -y
+#  when: "'perl' not in ansible_facts.packages"
+#- name: Install package Perl
+#  yum:
+#    name: "perl"
+#    state: present
+#    update_cache: yes
+#  when: "'perl' not in ansible_facts.packages"
+- name: Install packages
+  yum:
+    name: ['cpan', 'perl', 'perl-Sys-Syslog', 'perl-Time-Piece', 'perl-Sys-Statistics-Linux', 'perl-File-ReadBackwards', 'perl-TermReadKey', 'nrpe', 'nagios-plugins-*']
+    state: present
+    update_cache: yes
+#- name: Edit /etc/sudoers
+#  command: sh -c "{{ context }}"
+- name: Add line to file /etc/sudoers
+  blockinfile:
+    path: "{{ path_sudoers }}"
+    marker: "#Allow nagios restart services"
+    state: present
+    block: |
+      nagios ALL=NOPASSWD: /usr/local/nagios/libexec/
+      nagios ALL=NOPASSWD: /usr/local/nagios/libexec/check_wls/
+      nagios ALL=NOPASSWD: /bin/systemctl status nrpe
+      nagios ALL=NOPASSWD: /bin/systemctl start nrpe
+      nagios ALL=NOPASSWD: /bin/systemctl stop nrpe
+      nagios ALL=NOPASSWD: /bin/systemctl restart nrpe

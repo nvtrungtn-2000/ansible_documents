@@ -1,0 +1,50 @@
+---
+# Install our needed packages for each specific OS
+- include: "packages-{{ ansible_os_family }}.yml"
+- name: Allow nrpe process all
+  shell: semanage permissive -a nrpe_t
+- name: Unpack HariSakhon
+  unarchive:
+    src: files/lib.tar.gz
+    dest: "{{ plugindir }}"
+    owner: root
+    group: root
+    mode: 0755
+- name : Copy file config to remote machine.
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ includedir }}"
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+    - "vnpay.cfg"
+    - "vnpay_linux.cfg"
+- name : Copy file to remote machine.
+  copy:
+   src: "files/{{ item }}"
+   dest: "{{ plugindir }}"
+   owner: root
+   group: root
+   mode: 0755
+  with_items:
+   - "check_linux_stats.pl"
+   - "check_time_diff.sh"
+   - "count_connection_port.sh"
+   - "check_web_log.pl"
+   - "check_appVTB_log.pl"
+   - "utils.pm"
+- template:
+   src: templates/nrpe.cfg.j2
+   dest: /usr/local/nagios/etc/nrpe.cfg
+   owner: nagios
+   group: nagios
+   mode: 0644
+  notify: 
+  - restart nrpe
+#Ensure NRPE server is running and will start at boot
+- name: Ensure NRPE server is running
+  service:
+    name: nrpe
+    state: started
+    enabled: yes

@@ -1,0 +1,33 @@
+---
+- name: Create Dirs on remote machine.
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ rpm_telegraf_dest }}"
+- name : Copy file RPM to remote machine.
+  copy:
+    src: "files/rpm_telegraf/{{ item }}"
+    dest: "{{ rpm_telegraf_dest }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "telegraf-1.17.3-1.x86_64.rpm"
+#- name: Install RPM
+#  shell: cd "{{ rpm_telegraf_dest }}";yum install *.rpm -y
+- name: install telegraf rpm
+  yum:
+    name: "{{ rpm_telegraf_dest }}/telegraf-1.17.3-1.x86_64.rpm"
+    state: present
+- name: Start of service telegraf
+  service: name=telegraf state=started enabled=yes
+- template:
+    src: template/telegraf.conf.j2
+    dest: /etc/telegraf/telegraf.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+  - restart telegraf

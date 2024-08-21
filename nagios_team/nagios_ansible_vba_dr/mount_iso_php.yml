@@ -1,0 +1,16 @@
+---
+- name: Unpack repophp7 source files
+  unarchive:
+    src: files/nagiosxi/repophp7.tar.gz
+    dest: "{{ tmpdir }}"
+- name: Add Repository Local
+  yum_repository:
+    name: PHP7
+    description: YUM Repo Local
+    baseurl: "file:///tmp/repophp7"
+    gpgcheck: no
+    enabled: yes
+- name: yum-clean-metadata
+  command: yum clean all
+  args:
+      warn: no

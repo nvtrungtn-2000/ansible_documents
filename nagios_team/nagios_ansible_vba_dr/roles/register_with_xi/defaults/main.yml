@@ -1,0 +1,50 @@
+---
+hostgroups: "LinuxSystem"
+contact_group: "admins"
+config_name: "LinuxSystemNew"
+config_temp: "host_name={{ config_name }}&service_description={{ item.name }}&hostgroup_name={{ hostgroups }}&use=xiwizard_nrpe_service&check_command={{ item.command }}&check_interval=5&retry_interval=1&max_check_attempts=5&check_period=xi_timeperiod_24x7&active_checks_enabled=1&passive_checks_enabled=0&low_flap_threshold=15&high_flap_threshold=20&flap_detection_enabled=1&flap_detection_options=w,c,&notification_interval=0&first_notification_delay=0&notification_period=xi_timeperiod_24x7&notification_options=w,c,r,&notifications_enabled=1&contact_groups={{ contact_group }}&stalking_options=w,c,u,&_xiwizard=1&register=1"
+check_host: "check-host-alive!!!!!!!!"
+service_list:
+ - {name: Check Time, command: check_nrpe_time!!!!!!!!}
+ - {name: CPU Context Switch, command: check_nrpe!check_ctxt_new!-a 100000 110000!!!!!!}
+
+
+CheckTime: "Check Time"
+check_time: "check_nrpe_time!!!!!!!!"
+
+CPU_context_switch: "CPU Context Switch"
+check_ctxt_new: "check_nrpe!check_ctxt_new!-a 100000 110000!!!!!!"
+
+CPU_Load: "CPU Load"
+check_load: "check_nrpe!check_load_new!!!!!!!"
+
+CPU_Usage: "CPU Usage"
+check_cpu_usage: "check_nrpe!check_cpu_new!!!!!!!"
+
+MEM_Usage: "Memory Usage"
+check_mem_usage: "check_nrpe!check_mem_new!!!!!!!"
+
+Disk_Usage: "Disk Usage"
+check_disk_usage: "check_nrpe!check_disk_new!!!!!!!"
+
+Disk_IO: "Disk IO"
+check_disk_io: "check_nrpe!check_io_new!-a sda,sdb,sdc!!!!!!"
+
+Network_IO: "Network IO"
+check_network_io: "check_nrpe!check_net_new!-a all!!!!!!"
+
+Open_files: "Open files"
+check_open_files: "check_nrpe!check_open_file_new!!!!!!!"
+
+Process: "Process"
+check_process: "check_nrpe!check_procs_new!-a 5500 6000!!!!!!"
+
+Socket: "Sockets"
+check_socket: "check_nrpe!check_socket_new!-a 7000 7500!!!!!!"
+
+Uptime: "Uptime"
+check_uptime: "check_nrpe!check_uptime_new!!!!!!!"
+
+Users: "Users"
+check_users: "check_nrpe!check_users!-a '-w 10 -c 15'!!!!!!"
+

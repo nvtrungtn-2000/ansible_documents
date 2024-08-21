@@ -1,0 +1,37 @@
+---
+#- include: "mount_iso.yml"
+#- name: Copy file rpm for install PERL to remote machine.
+#  copy:
+#    src: "files/perl/{{ item }}"
+#    dest: "{{ perldir }}"
+#    owner: root
+#    group: root
+#    mode: 0755
+#  with_items: "{{ perl_rpm_package }}"
+- name: Install packages
+  yum:
+    name: ['perl', 'autoconf', 'automake', 'gcc', 'make', 'openssl-devel', 'net-snmp', 'net-snmp-utils', 'perl-Sys-Syslog', 'perl-Time-Piece', 'perl-TermReadKey']
+    state: present
+    update_cache: yes
+- name: Unpack NRPE source files
+  unarchive:
+    src: files/nrpe-4.0.3.tar.gz
+    dest: "{{ softdir_dest }}"
+- name: Configure NRPE
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";./configure --enable-command-args
+- name: Make All  NRPE
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";make all;make install-groups-users;make install;make install-config;make install-init
+- name: edit /etc/service
+  shell: cd "{{ softdir_dest }}/{{ nrpesrc }}";sh -c "echo >> /etc/services";sh -c "sudo echo '# Nagios services' >> /etc/services";sh -c "sudo echo 'nrpe    5666/tcp' >> /etc/services"
+- name: Edit /etc/sudoers
+  command: sh -c "{{ context }}"
+  notify:
+    - restart nrpe
+- name: Unpack NRPE Plugin source files
+  unarchive:
+    src: files/nagios-plugins-2.3.3.tar.gz
+    dest: "{{ softdir_dest }}"
+- name: Configure NRPE Plugin
+  shell: cd "{{ softdir_dest }}/{{ nrpe_plugin_src }}";./configure;make;make install
+  notify:
+    - restart nrpe

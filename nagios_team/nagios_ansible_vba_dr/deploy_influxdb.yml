@@ -1,0 +1,17 @@
+
+---
+- import_playbook: "keys.yml"
+- name: Install Influxdb
+  hosts: redhat
+  gather_facts: yes
+  remote_user: nagios
+  become: yes
+  
+#  vars_files:
+#    - "vars/vars.yml"
+
+
+  roles:
+#   - role: nrpe_reinstall_linux
+    - role: influxdb
+#   - role: nrpe_install_linux

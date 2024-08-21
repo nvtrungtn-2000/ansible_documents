@@ -1,0 +1,3 @@
+$ cpan
+cpan> o conf urllist "file:///media/SuperDuperFlashyDrive/cpan"
+cpan> o conf commit

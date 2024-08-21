@@ -1,0 +1,15 @@
+
+---
+- import_playbook: "keys.yml"
+- name: Install NRPE and Register Host and Services
+  hosts: redhat
+  gather_facts: yes
+  remote_user: nagios
+  become: yes
+
+
+
+  roles:
+#   - role: nrpe_reinstall_linux
+    - role: nagiosxi_upgrade_remote
+#   - role: nrpe_install_linux

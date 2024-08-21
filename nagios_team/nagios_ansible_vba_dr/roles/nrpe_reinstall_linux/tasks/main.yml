@@ -1,0 +1,17 @@
+---
+# Install our needed packages for each specific OS
+- include: "packages-{{ ansible_os_family }}.yml"
+- template:
+   src: templates/nrpe.cfg.j2
+   dest: /usr/local/nagios/etc/nrpe.cfg
+   owner: nagios
+   group: nagios
+   mode: 0644
+  notify: 
+  - restart nrpe
+#Ensure NRPE server is running and will start at boot
+- name: Ensure NRPE server is running
+  service:
+    name: nrpe
+    state: started
+    enabled: yes

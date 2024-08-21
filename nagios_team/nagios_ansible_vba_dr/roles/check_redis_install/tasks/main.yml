@@ -1,0 +1,25 @@
+---
+- name : Copy file Redis RPM to remote machine.
+  copy:
+    src: "files/redis_rpm/{{ item }}"
+    dest: "{{ redis_rpmdir }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "perl-Redis-1.978-1.el7.noarch.rpm"
+    - "perl-PerlIO-via-Timeout-0.29-1.el7.noarch.rpm"
+    - "perl-IO-Socket-Timeout-0.27-1.el7.noarch.rpm"
+    - "perl-Try-Tiny-0.12-2.el7.noarch.rpm"
+- name: Install RPM Redis
+  shell: cd "{{ redis_rpmdir }}";yum install *.rpm -y
+  when: "'perl-Redis' not in ansible_facts.packages"
+- name : Copy file to remote machine.
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ plugindir }}"
+    owner: root
+    group: root
+    mode: 0775
+  with_items:
+    - "check_redis_stats.pl"

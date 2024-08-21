@@ -1,0 +1,6 @@
+---
+hostgroups: "LinuxSystem"
+contact_group: "admins"
+config_name: "mem_conf"
+list_service: ['PING', 'HTTP']
+
